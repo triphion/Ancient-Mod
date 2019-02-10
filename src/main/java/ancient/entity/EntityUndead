@@ -1,0 +1,69 @@
+	List<Entity> targetList;
+	List friendlyList = new ArrayList<>(32);
+	List enemyList = new ArrayList<>(32);
+  
+      @Override
+    public void setAttackTarget(EntityLivingBase entitylivingbaseIn) 
+    {
+    	if (this.canTarget) 
+    	{
+    		this.enemyList.removeAll(this.friendlyList);
+    		Entity enemy = (Entity) this.enemyList.get(0);
+    		double d0 = this.getDistanceSqToEntity((Entity) enemy);
+    		EntityLivingBase entityToAttack = (EntityLivingBase) enemy;
+    		
+    		if (d0 < 30.0D && d0 > 0) 
+    		{
+    			entitylivingbaseIn = (EntityLivingBase) enemy;
+        		super.setAttackTarget(entitylivingbaseIn);
+    		}
+    		
+    		else
+    		{
+    			super.setAttackTarget(null);
+    		}
+    	}
+    }
+    
+    @Override
+	protected void updateAITasks() 
+	{
+    	this.targetList = this.world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB((double)this.posX - 17.5D, (double)this.posY - 17.5D, (double)this.posZ - 17.5D, (double)this.posX + 17.5D, (double)this.posY + 17.5D, (double)this.posZ + 17.5D));
+    	
+    	if (this.getAttackTarget() == null) 
+    	{
+    		this.targetList.removeAll(this.friendlyList);
+    		
+    		if (this.targetList.contains((EntityUndead)this.getAttackTarget())) 
+    		{
+    			if (((EntityUndead)this.getAttackTarget()).isAlly()) 
+    			{
+    				if (!this.friendlyList.contains(this.getAttackTarget())) 
+    				{
+        				this.friendlyList.add((EntityUndead)this.getAttackTarget());
+    				}
+    			}
+    		}
+    		
+    		if (this.targetList.contains((EntityPlayerMP)this.getAttackTarget())) 
+    		{
+    			if (!this.friendlyList.contains((EntityPlayerMP)this.getAttackTarget())) 
+    			{
+        			this.friendlyList.add((EntityPlayerMP)this.getAttackTarget());
+    			}
+    		}
+    		
+			this.targetList.removeAll(this.friendlyList);
+    		this.enemyList.clear();
+			this.enemyList.addAll(this.targetList);
+    		
+    		if (!this.enemyList.isEmpty()) 
+    		{
+    			this.canTarget = true;
+    		}
+    		else if (this.enemyList.isEmpty())
+    		{
+    			this.canTarget = false;
+    		}
+    	}
+	}
