@@ -1,6 +1,15 @@
 	List<Entity> targetList;
 	List friendlyList = new ArrayList<>(32);
 	List enemyList = new ArrayList<>(32);
+	
+	protected boolean canTarget;
+  
+  	public EntityUndead(World worldIn) 
+	{
+		super(worldIn);
+		this.setSize(0.8F, 2F);
+		this.experienceValue = 3;
+	}
   
       @Override
     public void setAttackTarget(EntityLivingBase entitylivingbaseIn) 
