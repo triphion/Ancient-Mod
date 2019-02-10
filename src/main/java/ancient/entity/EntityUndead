@@ -1,8 +1,8 @@
-	List<Entity> targetList;
-	List friendlyList = new ArrayList<>(32);
-	List enemyList = new ArrayList<>(32);
+	List<Entity> targetList; // The aabb list
+	List friendlyList = new ArrayList<>(32); // The friendly list that this entity should ignore selecting as its target
+	List enemyList = new ArrayList<>(32); // The enemy list that this entity should choose from
 	
-	protected boolean canTarget;
+	protected boolean canTarget; // A boolean that turns true if the enemy list isn't empty
   
   	public EntityUndead(World worldIn) 
 	{
@@ -43,7 +43,7 @@
     	{
     		this.targetList.removeAll(this.friendlyList);
     		
-    		if (this.targetList.contains((EntityUndead)this.getAttackTarget())) 
+    		if (this.targetList.contains((EntityUndead)this.getAttackTarget())) // This is where my problem lies, i want to check for undeads that are "allies" but i don't know how to reference all of them at the same time. 
     		{
     			if (((EntityUndead)this.getAttackTarget()).isAlly()) 
     			{
