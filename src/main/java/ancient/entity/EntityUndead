@@ -43,6 +43,7 @@
     	{
     		this.targetList.removeAll(this.friendlyList);
     		
+		// I know that what this does is it checks if the already set attacktarget is an undead, and this isn't working obviously since im trying to set an attacktarget using the already set attacktarget. Which of course would invite problem xD
     		if (this.targetList.contains((EntityUndead)this.getAttackTarget())) // This is where my problem lies, i want to check for undeads that are "allies" but i don't know how to reference all of them at the same time
     		{
     			if (((EntityUndead)this.getAttackTarget()).isAlly()) 
