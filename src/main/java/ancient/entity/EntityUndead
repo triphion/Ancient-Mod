@@ -43,7 +43,7 @@
     	{
     		this.targetList.removeAll(this.friendlyList);
     		
-    		if (this.targetList.contains((EntityUndead)this.getAttackTarget())) // This is where my problem lies, i want to check for undeads that are "allies" but i don't know how to reference all of them at the same time. 
+    		if (this.targetList.contains((EntityUndead)this.getAttackTarget())) // This is where my problem lies, i want to check for undeads that are "allies" but i don't know how to reference all of them at the same time
     		{
     			if (((EntityUndead)this.getAttackTarget()).isAlly()) 
     			{
@@ -54,6 +54,7 @@
     			}
     		}
     		
+		// This checks if the list contains any players and then adds them if they're not already in the friendly list (This here is also a problem when i don't know how to reference all the objects of this type in the list)
     		if (this.targetList.contains((EntityPlayerMP)this.getAttackTarget())) 
     		{
     			if (!this.friendlyList.contains((EntityPlayerMP)this.getAttackTarget())) 
