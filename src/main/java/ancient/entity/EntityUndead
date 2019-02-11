@@ -1,6 +1,6 @@
 	List<Entity> targetList; // The aabb list
-	List friendlyList = new ArrayList<>(32); // The friendly list that this entity should ignore selecting as its target
-	List enemyList = new ArrayList<>(32); // The enemy list that this entity should choose from
+	List<Entity> friendlyList = new ArrayList<>(); // The friendly list that this entity should ignore selecting as its target
+	List<Entity> enemyList = new ArrayList<>(); // The enemy list that this entity should choose from
 	
 	protected boolean canTarget; // A boolean that turns true if the enemy list isn't empty
   
@@ -34,47 +34,45 @@
     	}
     }
     
-    @Override
+    	@Override
 	protected void updateAITasks() 
 	{
-    	this.targetList = this.world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB((double)this.posX - 17.5D, (double)this.posY - 17.5D, (double)this.posZ - 17.5D, (double)this.posX + 17.5D, (double)this.posY + 17.5D, (double)this.posZ + 17.5D));
-    	
-    	if (this.getAttackTarget() == null) 
+		this.targetList = this.world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB((double)this.posX - 17.5D, (double)this.posY - 17.5D, (double)this.posZ - 17.5D, (double)this.posX + 17.5D, (double)this.posY + 17.5D, (double)this.posZ + 17.5D));
+		
+    	if (this.getAttackTarget() == null && this.isAlly()) 
     	{
-    		this.targetList.removeAll(this.friendlyList);
-    		
-		// I know that what this does is it checks if the already set attacktarget is an undead, and this isn't working obviously since im trying to set an attacktarget using the already set attacktarget. Which of course would invite problem xD
-    		if (this.targetList.contains((EntityUndead)this.getAttackTarget())) // This is where my problem lies, i want to check for undeads that are "allies" but i don't know how to reference all of them at the same time
-    		{
-    			if (((EntityUndead)this.getAttackTarget()).isAlly()) 
-    			{
-    				if (!this.friendlyList.contains(this.getAttackTarget())) 
-    				{
-        				this.friendlyList.add((EntityUndead)this.getAttackTarget());
-    				}
-    			}
-    		}
-    		
-		// This checks if the list contains any players and then adds them if they're not already in the friendly list (This here is also a problem when i don't know how to reference all the objects of this type in the list)
-    		if (this.targetList.contains((EntityPlayerMP)this.getAttackTarget())) 
-    		{
-    			if (!this.friendlyList.contains((EntityPlayerMP)this.getAttackTarget())) 
-    			{
-        			this.friendlyList.add((EntityPlayerMP)this.getAttackTarget());
-    			}
-    		}
-    		
-			this.targetList.removeAll(this.friendlyList);
-    		this.enemyList.clear();
-			this.enemyList.addAll(this.targetList);
-    		
-    		if (!this.enemyList.isEmpty()) 
-    		{
-    			this.canTarget = true;
-    		}
-    		else if (this.enemyList.isEmpty())
-    		{
-    			this.canTarget = false;
-    		}
+        	
+    		for (Entity entity : this.targetList) 
+        	{
+        		if (entity instanceof EntityUndead && ((EntityUndead) entity).isAlly() && !this.friendlyList.contains(entity)) 
+        		{
+        			this.friendlyList.add(entity);
+        		}
+        		
+        		if (entity instanceof EntityPlayerMP && !this.friendlyList.contains(entity)) 
+        		{
+        			this.friendlyList.add(entity);
+        		}
+        	}
+        	for (Entity entity : this.friendlyList) 	
+        	{
+        		if (entity.isDead) 
+        		{
+        			this.friendlyList.remove(entity);
+        		}
+        	}
     	}
-	}
+    		
+    	this.targetList.removeAll(this.friendlyList);
+    	this.enemyList.clear();
+    	this.enemyList.addAll(this.targetList);
+    		
+    	if (!this.enemyList.isEmpty()) 
+    	{
+    		this.canTarget = true;
+    	}
+    	else if (this.enemyList.isEmpty())
+    	{
+    		this.canTarget = false;
+    	}
+    }
